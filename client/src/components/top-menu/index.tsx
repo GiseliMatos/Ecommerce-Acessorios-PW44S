@@ -1,16 +1,35 @@
-import React from "react";
+import React, { useState } from "react";
 import { Button } from "primereact/button";
-import { Badge } from "primereact/badge";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/context/hooks/use-auth";
+import { useCart } from "@/context/hooks/use-cart";
+import { Dialog } from "primereact/dialog";
+import { InputText } from "primereact/inputtext";
 
 const TopMenu: React.FC = () => {
   const navigate = useNavigate();
   const { authenticated, handleLogout } = useAuth();
+  const { getTotalItems } = useCart();
+  const [showSearchDialog, setShowSearchDialog] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
 
   const handleLogoutClick = () => {
     handleLogout();
     navigate("/login");
+  };
+
+  const handleSearch = () => {
+    if (searchTerm.trim()) {
+      navigate(`/products?search=${encodeURIComponent(searchTerm.trim())}`);
+      setShowSearchDialog(false);
+      setSearchTerm("");
+    }
+  };
+
+  const handleSearchKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter") {
+      handleSearch();
+    }
   };
 
   return (
@@ -83,7 +102,7 @@ const TopMenu: React.FC = () => {
           {/* Menu Central */}
           <nav style={{ display: "flex", gap: "32px", alignItems: "center" }}>
             <a
-              onClick={() => navigate("/products")}
+              onClick={() => navigate("/products/category/1")}
               style={{
                 cursor: "pointer",
                 color: "#666",
@@ -100,7 +119,7 @@ const TopMenu: React.FC = () => {
               COLARES
             </a>
             <a
-              onClick={() => navigate("/products")}
+              onClick={() => navigate("/products/category/2")}
               style={{
                 cursor: "pointer",
                 color: "#666",
@@ -117,7 +136,7 @@ const TopMenu: React.FC = () => {
               BRINCOS
             </a>
             <a
-              onClick={() => navigate("/products")}
+              onClick={() => navigate("/products/category/3")}
               style={{
                 cursor: "pointer",
                 color: "#666",
@@ -134,7 +153,7 @@ const TopMenu: React.FC = () => {
               PULSEIRAS
             </a>
             <a
-              onClick={() => navigate("/products")}
+              onClick={() => navigate("/products/category/4")}
               style={{
                 cursor: "pointer",
                 color: "#666",
@@ -151,7 +170,7 @@ const TopMenu: React.FC = () => {
               ANÉIS
             </a>
             <a
-              onClick={() => navigate("/categories")}
+              onClick={() => navigate("/products/category/5")}
               style={{
                 cursor: "pointer",
                 color: "#e1306c",
@@ -188,6 +207,7 @@ const TopMenu: React.FC = () => {
             {/* Busca */}
             <i
               className="pi pi-search"
+              onClick={() => setShowSearchDialog(true)}
               style={{
                 fontSize: "20px",
                 color: "#666",
@@ -196,7 +216,10 @@ const TopMenu: React.FC = () => {
             />
 
             {/* Carrinho com Badge */}
-            <div style={{ position: "relative", display: "inline-block" }}>
+            <div 
+              onClick={() => navigate("/cart")}
+              style={{ position: "relative", display: "inline-block" }}
+            >
               <i
                 className="pi pi-shopping-cart"
                 style={{
@@ -205,25 +228,27 @@ const TopMenu: React.FC = () => {
                   cursor: "pointer",
                 }}
               />
-              <span
-                style={{
-                  position: "absolute",
-                  top: "-8px",
-                  right: "-8px",
-                  backgroundColor: "#dc3545",
-                  color: "#fff",
-                  borderRadius: "50%",
-                  width: "18px",
-                  height: "18px",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  fontSize: "10px",
-                  fontWeight: "600",
-                }}
-              >
-                2
-              </span>
+              {getTotalItems() > 0 && (
+                <span
+                  style={{
+                    position: "absolute",
+                    top: "-8px",
+                    right: "-8px",
+                    backgroundColor: "#e1306c",
+                    color: "#fff",
+                    borderRadius: "50%",
+                    width: "18px",
+                    height: "18px",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    fontSize: "10px",
+                    fontWeight: "600",
+                  }}
+                >
+                  {getTotalItems()}
+                </span>
+              )}
             </div>
 
             {/* User/Login */}
@@ -264,6 +289,37 @@ const TopMenu: React.FC = () => {
 
       {/* Espaçamento para o conteúdo */}
       <div style={{ height: "123px" }} />
+
+      {/* caixa de busca */}
+      <Dialog
+        header="Buscar Produtos"
+        visible={showSearchDialog}
+        style={{ width: "500px", maxWidth: "90vw" }}
+        onHide={() => {
+          setShowSearchDialog(false);
+          setSearchTerm("");
+        }}
+      >
+        <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
+          <InputText
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            onKeyPress={handleSearchKeyPress}
+            placeholder="Digite o nome do produto..."
+            style={{ flex: 1 }}
+            autoFocus
+          />
+          <Button
+            label="Buscar"
+            icon="pi pi-search"
+            onClick={handleSearch}
+            style={{
+              backgroundColor: "#e1306c",
+              border: "none",
+            }}
+          />
+        </div>
+      </Dialog>
     </>
   );
 };

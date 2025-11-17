@@ -8,7 +8,11 @@ export const HomePage = () => {
   // Imagens banner 
   const bannerImages = [
     {
-      url: "/assets/images/colecao.webp",
+      url: "/assets/images/pecas.webp",
+      link: "/products"
+    },
+    {
+      url: "/assets/images/organicos.webp",
       link: "/products"
     },
     {
@@ -18,7 +22,11 @@ export const HomePage = () => {
     {
       url: "/assets/images/colares.webp",
       link: "/products"
-    }
+    },
+    {
+      url: "/assets/images/colecao.webp",
+      link: "/products"
+    },
   ];
 
   // Auto-play do carrossel
@@ -571,6 +579,365 @@ export const HomePage = () => {
               color: "#666",
               lineHeight: "1.6"
             }}>Seu pedido em 24h</p>
+          </div>
+        </div>
+      </div>
+
+      {/* Seção "Você vai gostar" - Carrossel de Produtos */}
+      <div style={{
+        padding: "60px 20px",
+        maxWidth: "1800px",
+        margin: "0 auto"
+      }}>
+        <h2 style={{
+          fontSize: "32px",
+          fontWeight: "700",
+          textAlign: "center",
+          marginBottom: "50px",
+          textTransform: "uppercase",
+          letterSpacing: "2px"
+        }}>VOCÊ VAI GOSTAR!</h2>
+        
+        <div style={{
+          position: "relative",
+          overflow: "hidden"
+        }}>
+          <div style={{
+            display: "flex",
+            gap: "20px",
+            animation: "scroll 20s linear infinite",
+            width: "fit-content"
+          }}>
+            {/* Produtos - duplicados para efeito contínuo */}
+            {[...Array(2)].map((_, setIndex) => (
+              <React.Fragment key={setIndex}>
+                {/* Produto 1 */}
+                <div style={{
+                  minWidth: "280px",
+                  backgroundColor: "#fff",
+                  borderRadius: "8px",
+                  overflow: "hidden",
+                  boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
+                  cursor: "pointer",
+                  transition: "transform 0.3s ease"
+                }}
+                onMouseEnter={(e) => e.currentTarget.style.transform = "translateY(-5px)"}
+                onMouseLeave={(e) => e.currentTarget.style.transform = "translateY(0)"}
+                onClick={() => navigate("/products")}>
+                  <div style={{
+                    width: "100%",
+                    height: "280px",
+                    backgroundImage: "url(/assets/images/colar.webp)",
+                    backgroundSize: "cover",
+                    backgroundPosition: "center"
+                  }} />
+                  <div style={{ padding: "20px" }}>
+                    <p style={{
+                      fontSize: "12px",
+                      color: "#999",
+                      marginBottom: "8px",
+                      textTransform: "uppercase"
+                    }}>Novidades semana</p>
+                    <h3 style={{
+                      fontSize: "16px",
+                      fontWeight: "600",
+                      marginBottom: "12px",
+                      color: "#333"
+                    }}>Conjunto Ponto de Luz</h3>
+                    <p style={{
+                      fontSize: "20px",
+                      fontWeight: "700",
+                      color: "#e1306c",
+                      marginBottom: "15px"
+                    }}>R$ 79,90</p>
+                    <button style={{
+                      width: "100%",
+                      backgroundColor: "#C9A063",
+                      color: "#fff",
+                      border: "none",
+                      padding: "12px",
+                      fontSize: "14px",
+                      fontWeight: "600",
+                      textTransform: "uppercase",
+                      cursor: "pointer",
+                      transition: "background-color 0.3s ease"
+                    }}
+                    onMouseEnter={(e) => e.currentTarget.style.backgroundColor = "#b8904f"}
+                    onMouseLeave={(e) => e.currentTarget.style.backgroundColor = "#C9A063"}>
+                      ADICIONAR AO CARRINHO
+                    </button>
+                  </div>
+                </div>
+
+                {/* Produto 2 */}
+                <div style={{
+                  minWidth: "280px",
+                  backgroundColor: "#fff",
+                  borderRadius: "8px",
+                  overflow: "hidden",
+                  boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
+                  cursor: "pointer",
+                  transition: "transform 0.3s ease"
+                }}
+                onMouseEnter={(e) => e.currentTarget.style.transform = "translateY(-5px)"}
+                onMouseLeave={(e) => e.currentTarget.style.transform = "translateY(0)"}
+                onClick={() => navigate("/products")}>
+                  <div style={{
+                    width: "100%",
+                    height: "280px",
+                    backgroundImage: "url(/assets/images/brinco.webp)",
+                    backgroundSize: "cover",
+                    backgroundPosition: "center"
+                  }} />
+                  <div style={{ padding: "20px" }}>
+                    <p style={{
+                      fontSize: "12px",
+                      color: "#999",
+                      marginBottom: "8px",
+                      textTransform: "uppercase"
+                    }}>Novidades semana</p>
+                    <h3 style={{
+                      fontSize: "16px",
+                      fontWeight: "600",
+                      marginBottom: "12px",
+                      color: "#333"
+                    }}>Conjunto Infinito</h3>
+                    <p style={{
+                      fontSize: "20px",
+                      fontWeight: "700",
+                      color: "#e1306c",
+                      marginBottom: "15px"
+                    }}>R$ 119,90</p>
+                    <button style={{
+                      width: "100%",
+                      backgroundColor: "#C9A063",
+                      color: "#fff",
+                      border: "none",
+                      padding: "12px",
+                      fontSize: "14px",
+                      fontWeight: "600",
+                      textTransform: "uppercase",
+                      cursor: "pointer",
+                      transition: "background-color 0.3s ease"
+                    }}
+                    onMouseEnter={(e) => e.currentTarget.style.backgroundColor = "#b8904f"}
+                    onMouseLeave={(e) => e.currentTarget.style.backgroundColor = "#C9A063"}>
+                      ADICIONAR AO CARRINHO
+                    </button>
+                  </div>
+                </div>
+
+                {/* Produto 3 */}
+                <div style={{
+                  minWidth: "280px",
+                  backgroundColor: "#fff",
+                  borderRadius: "8px",
+                  overflow: "hidden",
+                  boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
+                  cursor: "pointer",
+                  transition: "transform 0.3s ease"
+                }}
+                onMouseEnter={(e) => e.currentTarget.style.transform = "translateY(-5px)"}
+                onMouseLeave={(e) => e.currentTarget.style.transform = "translateY(0)"}
+                onClick={() => navigate("/products")}>
+                  <div style={{
+                    width: "100%",
+                    height: "280px",
+                    backgroundImage: "url(/assets/images/anel.webp)",
+                    backgroundSize: "cover",
+                    backgroundPosition: "center"
+                  }} />
+                  <div style={{ padding: "20px" }}>
+                    <p style={{
+                      fontSize: "12px",
+                      color: "#999",
+                      marginBottom: "8px",
+                      textTransform: "uppercase"
+                    }}>Novidades semana</p>
+                    <h3 style={{
+                      fontSize: "16px",
+                      fontWeight: "600",
+                      marginBottom: "12px",
+                      color: "#333"
+                    }}>Argola Trabalhada</h3>
+                    <p style={{
+                      fontSize: "20px",
+                      fontWeight: "700",
+                      color: "#e1306c",
+                      marginBottom: "15px"
+                    }}>R$ 59,90</p>
+                    <button style={{
+                      width: "100%",
+                      backgroundColor: "#C9A063",
+                      color: "#fff",
+                      border: "none",
+                      padding: "12px",
+                      fontSize: "14px",
+                      fontWeight: "600",
+                      textTransform: "uppercase",
+                      cursor: "pointer",
+                      transition: "background-color 0.3s ease"
+                    }}
+                    onMouseEnter={(e) => e.currentTarget.style.backgroundColor = "#b8904f"}
+                    onMouseLeave={(e) => e.currentTarget.style.backgroundColor = "#C9A063"}>
+                      ADICIONAR AO CARRINHO
+                    </button>
+                  </div>
+                </div>
+
+                {/* Produto 4 */}
+                <div style={{
+                  minWidth: "280px",
+                  backgroundColor: "#fff",
+                  borderRadius: "8px",
+                  overflow: "hidden",
+                  boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
+                  cursor: "pointer",
+                  transition: "transform 0.3s ease"
+                }}
+                onMouseEnter={(e) => e.currentTarget.style.transform = "translateY(-5px)"}
+                onMouseLeave={(e) => e.currentTarget.style.transform = "translateY(0)"}
+                onClick={() => navigate("/products")}>
+                  <div style={{
+                    width: "100%",
+                    height: "280px",
+                    backgroundImage: "url(/assets/images/colares.webp)",
+                    backgroundSize: "cover",
+                    backgroundPosition: "center"
+                  }} />
+                  <div style={{ padding: "20px" }}>
+                    <p style={{
+                      fontSize: "12px",
+                      color: "#999",
+                      marginBottom: "8px",
+                      textTransform: "uppercase"
+                    }}>Novidades semana</p>
+                    <h3 style={{
+                      fontSize: "16px",
+                      fontWeight: "600",
+                      marginBottom: "12px",
+                      color: "#333"
+                    }}>Conjunto de Esferas</h3>
+                    <p style={{
+                      fontSize: "20px",
+                      fontWeight: "700",
+                      color: "#e1306c",
+                      marginBottom: "15px"
+                    }}>R$ 119,90</p>
+                    <button style={{
+                      width: "100%",
+                      backgroundColor: "#C9A063",
+                      color: "#fff",
+                      border: "none",
+                      padding: "12px",
+                      fontSize: "14px",
+                      fontWeight: "600",
+                      textTransform: "uppercase",
+                      cursor: "pointer",
+                      transition: "background-color 0.3s ease"
+                    }}
+                    onMouseEnter={(e) => e.currentTarget.style.backgroundColor = "#b8904f"}
+                    onMouseLeave={(e) => e.currentTarget.style.backgroundColor = "#C9A063"}>
+                      ADICIONAR AO CARRINHO
+                    </button>
+                  </div>
+                </div>
+              </React.Fragment>
+            ))}
+          </div>
+        </div>
+
+        <style>{`
+          @keyframes scroll {
+            0% {
+              transform: translateX(0);
+            }
+            100% {
+              transform: translateX(calc(-280px * 4 - 80px));
+            }
+          }
+        `}</style>
+      </div>
+
+      {/* Seção Newsletter */}
+      <div style={{
+        backgroundColor: "#fff",
+        padding: "80px 20px",
+        textAlign: "center"
+      }}>
+        <div style={{
+          maxWidth: "800px",
+          margin: "0 auto"
+        }}>
+          <h2 style={{
+            fontSize: "clamp(24px, 4vw, 36px)",
+            fontWeight: "700",
+            marginBottom: "15px",
+            textTransform: "uppercase",
+            letterSpacing: "3px"
+          }}>NEWSLETTER</h2>
+          <p style={{
+            fontSize: "16px",
+            color: "#666",
+            marginBottom: "40px",
+            lineHeight: "1.6"
+          }}>Cadastre-se para receber as novidades e ganhe 15% na primeira compra!</p>
+          
+          <div style={{
+            display: "flex",
+            gap: "15px",
+            maxWidth: "600px",
+            margin: "0 auto",
+            flexWrap: "wrap",
+            justifyContent: "center"
+          }}>
+            <input
+              type="text"
+              placeholder="Nome"
+              style={{
+                flex: "1",
+                minWidth: "200px",
+                padding: "15px 20px",
+                fontSize: "14px",
+                border: "1px solid #ddd",
+                borderRadius: "4px",
+                outline: "none"
+              }}
+              onFocus={(e) => e.currentTarget.style.borderColor = "#e1306c"}
+              onBlur={(e) => e.currentTarget.style.borderColor = "#ddd"}
+            />
+            <input
+              type="email"
+              placeholder="E-mail"
+              style={{
+                flex: "1",
+                minWidth: "200px",
+                padding: "15px 20px",
+                fontSize: "14px",
+                border: "1px solid #ddd",
+                borderRadius: "4px",
+                outline: "none"
+              }}
+              onFocus={(e) => e.currentTarget.style.borderColor = "#e1306c"}
+              onBlur={(e) => e.currentTarget.style.borderColor = "#ddd"}
+            />
+            <button style={{
+              padding: "15px 40px",
+              backgroundColor: "#e1306c",
+              color: "#fff",
+              border: "none",
+              borderRadius: "4px",
+              fontSize: "14px",
+              fontWeight: "600",
+              textTransform: "uppercase",
+              cursor: "pointer",
+              transition: "background-color 0.3s ease",
+              letterSpacing: "1px"
+            }}
+            onMouseEnter={(e) => e.currentTarget.style.backgroundColor = "#c91e5a"}
+            onMouseLeave={(e) => e.currentTarget.style.backgroundColor = "#e1306c"}>
+              Cadastrar
+            </button>
           </div>
         </div>
       </div>

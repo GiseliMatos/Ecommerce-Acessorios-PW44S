@@ -3,7 +3,6 @@ import { Controller, useForm } from "react-hook-form";
 import { InputText } from "primereact/inputtext";
 import { Password } from "primereact/password";
 import { Button } from "primereact/button";
-import { Card } from "primereact/card";
 import { Link, useNavigate } from "react-router-dom";
 import type { AuthenticationResponse, IUserLogin } from "@/commons/types";
 import AuthService from "@/services/auth-service";
@@ -21,14 +20,15 @@ export const LoginPage = () => {
   const toast = useRef<Toast>(null);
   const [loading, setLoading] = useState(false);
   const { handleLogin } = useAuth();
+
   const onSubmit = async (userLogin: IUserLogin) => {
     setLoading(true);
     try {
       const response = await login(userLogin);
       if (response.status === 200 && response.data) {                
-       const authenticationResponse = response.data as AuthenticationResponse; 
-         handleLogin(authenticationResponse); // o 
-       toast.current?.show({
+        const authenticationResponse = response.data as AuthenticationResponse; 
+        handleLogin(authenticationResponse);
+        toast.current?.show({
           severity: "success",
           summary: "Sucesso",
           detail: "Login efetuado com sucesso.",
@@ -56,16 +56,62 @@ export const LoginPage = () => {
       setLoading(false);
     }
   };
+
   return (
-    <div className="flex justify-content-center align-items-center min-h-screen p-4">
+    <div style={{
+      minHeight: "100vh",
+      backgroundColor: "#f5f5f5",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      padding: "20px",
+      marginTop: "-100px"
+    }}>
       <Toast ref={toast} />
-      <Card title="Login" className="w-full sm:w-20rem shadow-2">
-        <form
-          onSubmit={handleSubmit(onSubmit)}
-          className="flex flex-column gap-3"
-        >
-          <div>
-            <label htmlFor="username" className="block mb-2">
+      
+      <div style={{
+        backgroundColor: "#fff",
+        borderRadius: "12px",
+        boxShadow: "0 4px 20px rgba(0,0,0,0.1)",
+        maxWidth: "450px",
+        width: "100%",
+        padding: "50px 40px"
+      }}>
+        <div style={{
+          textAlign: "center",
+          marginBottom: "40px"
+        }}>
+          <h1 style={{
+            fontSize: "28px",
+            fontWeight: "700",
+            color: "#333",
+            marginBottom: "10px",
+            textTransform: "uppercase",
+            letterSpacing: "1px"
+          }}>
+            Bem-vindo de volta
+          </h1>
+          <p style={{
+            fontSize: "14px",
+            color: "#666"
+          }}>
+            Entre com sua conta para continuar
+          </p>
+        </div>
+
+        <form onSubmit={handleSubmit(onSubmit)}>
+          {/* Username */}
+          <div style={{ marginBottom: "25px" }}>
+            <label 
+              htmlFor="username" 
+              style={{
+                display: "block",
+                marginBottom: "8px",
+                fontSize: "14px",
+                fontWeight: "600",
+                color: "#333"
+              }}
+            >
               Usuário
             </label>
             <Controller
@@ -76,16 +122,41 @@ export const LoginPage = () => {
                 <InputText
                   id="username"
                   {...field}
-                  className={errors.username ? "p-invalid w-full" : "w-full"}
+                  placeholder="Digite seu usuário"
+                  style={{
+                    width: "100%",
+                    padding: "12px 15px",
+                    fontSize: "14px",
+                    border: errors.username ? "2px solid #dc3545" : "1px solid #ddd",
+                    borderRadius: "6px"
+                  }}
                 />
               )}
             />
             {errors.username && (
-              <small className="p-error">{errors.username.message}</small>
+              <small style={{
+                color: "#dc3545",
+                fontSize: "12px",
+                marginTop: "5px",
+                display: "block"
+              }}>
+                {errors.username.message}
+              </small>
             )}
           </div>
-          <div>
-            <label htmlFor="password" className="block mb-2">
+
+          {/* Password */}
+          <div style={{ marginBottom: "30px" }}>
+            <label 
+              htmlFor="password" 
+              style={{
+                display: "block",
+                marginBottom: "8px",
+                fontSize: "14px",
+                fontWeight: "600",
+                color: "#333"
+              }}
+            >
               Senha
             </label>
             <Controller
@@ -98,34 +169,86 @@ export const LoginPage = () => {
                   {...field}
                   toggleMask
                   feedback={false}
-                  className={errors.password ? "p-invalid w-full" : "w-full"}
-                  inputClassName="w-full"
+                  placeholder="Digite sua senha"
+                  inputStyle={{
+                    width: "160%",
+                    padding: "12px 15px",
+                    fontSize: "14px",
+                    border: errors.password ? "2px solid #dc3545" : "1px solid #ddd",
+                    borderRadius: "6px"
+                  }}
+                  style={{ width: "100%" }}
                 />
               )}
             />
             {errors.password && (
-              <small className="p-error">{errors.password.message}</small>
+              <small style={{
+                color: "#dc3545",
+                fontSize: "12px",
+                marginTop: "5px",
+                display: "block"
+              }}>
+                {errors.password.message}
+              </small>
             )}
           </div>
+
+          {/* Submit Button */}
           <Button
             type="submit"
-            label="Entrar"
-            icon="pi pi-sign-in"
-            className="w-full"
+            label="ENTRAR"
             loading={loading || isSubmitting}
             disabled={loading || isSubmitting}
+            style={{
+              width: "100%",
+              padding: "14px",
+              backgroundColor: "#e1306c",
+              border: "none",
+              borderRadius: "6px",
+              fontSize: "16px",
+              fontWeight: "700",
+              letterSpacing: "1px",
+              cursor: loading || isSubmitting ? "not-allowed" : "pointer",
+              transition: "background-color 0.3s ease"
+            }}
+            onMouseEnter={(e) => {
+              if (!loading && !isSubmitting) {
+                e.currentTarget.style.backgroundColor = "#c91e5a";
+              }
+            }}
+            onMouseLeave={(e) => {
+              if (!loading && !isSubmitting) {
+                e.currentTarget.style.backgroundColor = "#e1306c";
+              }
+            }}
           />
         </form>
-        <div className="text-center mt-3">
-          <small>
+
+        {/* Register Link */}
+        <div style={{
+          textAlign: "center",
+          marginTop: "30px",
+          paddingTop: "25px",
+          borderTop: "1px solid #e0e0e0"
+        }}>
+          <p style={{
+            fontSize: "14px",
+            color: "#666"
+          }}>
             Não tem uma conta?{" "}
-            <Link to="/register" className="text-primary">
+            <Link 
+              to="/register" 
+              style={{
+                color: "#e1306c",
+                fontWeight: "600",
+                textDecoration: "none"
+              }}
+            >
               Criar conta
             </Link>
-          </small>
+          </p>
         </div>
-      </Card>
+      </div>
     </div>
   );
-  
 };

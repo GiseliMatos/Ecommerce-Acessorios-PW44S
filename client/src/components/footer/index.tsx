@@ -110,7 +110,7 @@ const Footer: React.FC = () => {
   return (
     <footer style={styles.footer}>
       <div style={styles.container}>
-        {/* A ELEGANCE CALÇADOS */}
+        {/* A Selene Acessórios */}
         <div>
           <h3 style={styles.sectionTitle}>SELENE ACESSÓRIOS</h3>
           <ul style={styles.list}>

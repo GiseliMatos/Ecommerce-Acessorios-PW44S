@@ -5,9 +5,13 @@ import { HomePage } from "@/pages/home";
 import { RequireAuth } from "@/components/require-auth";
 import { Layout } from "@/components/layout";
 import { CategoryListPage } from "@/pages/category-list";
-import { CategoryFormPage } from "@/pages/category-form";
 import { ProductListPage } from "@/pages/product-list";
-import { ProductFormPage } from "@/pages/product-form";
+import { ProductDetailPage } from "@/pages/product-detail";
+import { CartPage } from "@/pages/cart";
+import { CheckoutPage } from "@/pages/checkout";
+import { OrderSuccessPage } from "@/pages/order-success";
+import { OrdersPage } from "@/pages/orders";
+import { AddressesPage } from "@/pages/addresses";
 
 export function AppRoutes() {
   return (
@@ -16,18 +20,24 @@ export function AppRoutes() {
         {/* public routes */}
         <Route path="login" element={<LoginPage />} />
         <Route path="register" element={<RegisterPage />} />
-        <Route path="/" element={<HomePage />} />
-        <Route path="/home" element={<HomePage />} />
-        <Route path="/categories" element={<CategoryListPage />} />
-        <Route path="/products" element={<ProductListPage />} />
+        <Route index element={<HomePage />} />
+        <Route path="home" element={<HomePage />} />
 
-        {/* protected routes */}
+        <Route path="categories" element={<CategoryListPage />} />
+
+        <Route path="products" element={<ProductListPage />} />
+        <Route path="products/category/:categoryId" element={<ProductListPage />} />
+
+        <Route path="product/:id" element={<ProductDetailPage />} />
+
+        <Route path="cart" element={<CartPage />} />
+        <Route path="order-success" element={<OrderSuccessPage />} />
+
+        {/* protected */}
         <Route element={<RequireAuth />}>
-        {/*<Route  path="/categories/new"  element={<CategoryFormPage  />}  />
-		      <Route  path="/categories/:id"  element={<CategoryFormPage  />}  />
-           <Route  path="/products/new"  element={<ProductFormPage />}  />
-		      <Route  path="/products/:id"  element={<ProductFormPage />}  /> */}
-
+          <Route path="checkout" element={<CheckoutPage />} />
+          <Route path="orders" element={<OrdersPage />} />
+          <Route path="addresses" element={<AddressesPage />} />
         </Route>
       </Route>
     </Routes>

@@ -10,7 +10,7 @@ export function Layout() {
         flexDirection: "column",
         minHeight: "100vh",
         width: "100%",
-        overflowX: "hidden", // evita scroll lateral
+        overflowX: "hidden", 
       }}
     >
       <TopMenu />
