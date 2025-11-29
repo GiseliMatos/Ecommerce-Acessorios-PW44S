@@ -173,13 +173,15 @@ const TopMenu: React.FC = () => {
               onClick={() => navigate("/products/category/5")}
               style={{
                 cursor: "pointer",
-                color: "#e1306c",
+                color: "#666",
                 fontSize: "14px",
                 fontWeight: "600",
                 textDecoration: "none",
                 textTransform: "uppercase",
                 letterSpacing: "0.5px",
               }}
+              onMouseEnter={(e) => (e.currentTarget.style.color = "#e1306c")}
+              onMouseLeave={(e) => (e.currentTarget.style.color = "#666")}
             >
               CONJUNTOS
             </a>

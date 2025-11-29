@@ -404,7 +404,7 @@ export const CheckoutPage = () => {
                             width: "100%",
                             height: "100%",
                             objectFit: "contain",
-                            objectPosition: "center"
+                            objectPosition: "left"
                           }}
                         />
                       ) : (

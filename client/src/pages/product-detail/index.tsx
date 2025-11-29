@@ -329,15 +329,15 @@ export const ProductDetailPage = () => {
             {/* Informações Adicionais */}
             <div style={{
               backgroundColor: "#f9f9f9",
+              display: "flex",
               padding: "20px",
               borderRadius: "8px"
             }}>
               <div style={{
                 display: "flex",
-                alignItems: "center",
-                marginBottom: "15px"
+                alignItems: "center"
               }}>
-                <i className="pi pi-truck" style={{ fontSize: "24px", color: "#e1306c", marginRight: "15px" }} />
+                <i className="pi pi-truck" style={{ fontSize: "24px", color: "#e1306c" }} />
                 <div>
                   <p style={{ fontSize: "14px", fontWeight: "600", marginBottom: "5px" }}>
                     Frete Grátis
@@ -350,10 +350,9 @@ export const ProductDetailPage = () => {
 
               <div style={{
                 display: "flex",
-                alignItems: "center",
-                marginBottom: "15px"
+                alignItems: "center"
               }}>
-                <i className="pi pi-sync" style={{ fontSize: "24px", color: "#e1306c", marginRight: "15px" }} />
+                <i className="pi pi-sync" style={{ fontSize: "24px", color: "#e1306c", marginRight: "-5px", marginLeft: "20px"}} />
                 <div>
                   <p style={{ fontSize: "14px", fontWeight: "600", marginBottom: "5px" }}>
                     Troca Grátis
@@ -368,7 +367,7 @@ export const ProductDetailPage = () => {
                 display: "flex",
                 alignItems: "center"
               }}>
-                <i className="pi pi-shield" style={{ fontSize: "24px", color: "#e1306c", marginRight: "15px" }} />
+                <i className="pi pi-shield" style={{ fontSize: "24px", color: "#e1306c", marginRight: "-5px", marginLeft: "20px" }} />
                 <div>
                   <p style={{ fontSize: "14px", fontWeight: "600", marginBottom: "5px" }}>
                     Compra Segura
