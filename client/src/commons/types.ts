@@ -31,7 +31,6 @@ export interface AuthenticationResponse {
   user: AuthenticatedUser;
 }
 
-//...
 export  interface  ICategory {
     id?:  number;
     name:  string;

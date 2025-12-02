@@ -1,7 +1,69 @@
-import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import OrderService, { type IOrder } from "@/services/order-service";
 
 export const OrderSuccessPage = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const [order, setOrder] = useState<IOrder | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const orderId = searchParams.get("orderId");
+    
+    if (!orderId) {
+      navigate("/");
+      return;
+    }
+
+    loadOrder();
+  }, [searchParams, navigate]);
+
+  const loadOrder = async () => {
+    try {
+      setLoading(true);
+      const response = await OrderService.findAllByAuthenticatedUser();
+      if (response.status === 200 && response.data.length > 0) {
+        const lastOrder = response.data[response.data.length - 1];
+        setOrder(lastOrder);
+      }
+    } catch (error) {
+      console.error("Erro ao carregar pedido:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const getPaymentLabel = (formaPagamento: string) => {
+    switch (formaPagamento) {
+      case "credit": return "Cartão de Crédito";
+      case "pix": return "PIX";
+      case "boleto": return "Boleto Bancário";
+      default: return formaPagamento;
+    }
+  };
+
+  const getShippingLabel = (formaEntrega: string) => {
+    switch (formaEntrega) {
+      case "standard": return "Padrão (10-15 dias)";
+      case "express": return "Expresso (até 5 dias)";
+      case "pickup": return "Retirar na Loja";
+      default: return formaEntrega;
+    }
+  };
+
+  if (loading) {
+    return (
+      <div style={{ 
+        display: "flex", 
+        justifyContent: "center", 
+        alignItems: "center", 
+        minHeight: "100vh" 
+      }}>
+        <i className="pi pi-spin pi-spinner" style={{ fontSize: "3rem" }} />
+      </div>
+    );
+  }
 
   return (
     <div style={{ backgroundColor: "#f5f5f5", minHeight: "100vh", paddingBottom: "40px" }}>
@@ -51,64 +113,136 @@ export const OrderSuccessPage = () => {
           </p>
 
           {/* Informações do Pedido */}
-          <div style={{
-            backgroundColor: "#f9f9f9",
-            padding: "30px",
-            borderRadius: "8px",
-            marginBottom: "30px",
-            textAlign: "left"
-          }}>
-            <h3 style={{
-              fontSize: "18px",
-              fontWeight: "600",
-              marginBottom: "20px",
-              textAlign: "center"
-            }}>
-              Informações do Pedido
-            </h3>
-
+          {order && (
             <div style={{
-              display: "grid",
-              gridTemplateColumns: "1fr 1fr",
-              gap: "20px"
+              backgroundColor: "#f9f9f9",
+              padding: "30px",
+              borderRadius: "8px",
+              marginBottom: "30px",
+              textAlign: "left"
             }}>
-              <div>
-                <p style={{ fontSize: "14px", color: "#999", marginBottom: "5px" }}>
-                  Número do Pedido
-                </p>
-                <p style={{ fontSize: "16px", fontWeight: "600" }}>
-                  #{Math.floor(Math.random() * 1000000)}
-                </p>
+              <h3 style={{
+                fontSize: "18px",
+                fontWeight: "600",
+                marginBottom: "20px",
+                textAlign: "center"
+              }}>
+                Informações do Pedido
+              </h3>
+
+              <div style={{
+                display: "grid",
+                gridTemplateColumns: window.innerWidth < 768 ? "1fr" : "1fr 1fr",
+                gap: "20px"
+              }}>
+                <div>
+                  <p style={{ fontSize: "14px", color: "#999", marginBottom: "5px" }}>
+                    Número do Pedido
+                  </p>
+                  <p style={{ fontSize: "16px", fontWeight: "600" }}>
+                    #{order.id}
+                  </p>
+                </div>
+
+                <div>
+                  <p style={{ fontSize: "14px", color: "#999", marginBottom: "5px" }}>
+                    Data
+                  </p>
+                  <p style={{ fontSize: "16px", fontWeight: "600" }}>
+                    {order.dateOrder ? new Date(order.dateOrder).toLocaleDateString("pt-BR") : new Date().toLocaleDateString("pt-BR")}
+                  </p>
+                </div>
+
+                <div>
+                  <p style={{ fontSize: "14px", color: "#999", marginBottom: "5px" }}>
+                    Forma de Pagamento
+                  </p>
+                  <p style={{ fontSize: "16px", fontWeight: "600" }}>
+                    {getPaymentLabel(order.formaPagamento)}
+                  </p>
+                </div>
+
+                <div>
+                  <p style={{ fontSize: "14px", color: "#999", marginBottom: "5px" }}>
+                    Forma de Entrega
+                  </p>
+                  <p style={{ fontSize: "16px", fontWeight: "600" }}>
+                    {getShippingLabel(order.formaEntrega)}
+                  </p>
+                </div>
+
+                <div style={{ gridColumn: window.innerWidth < 768 ? "1" : "1 / -1" }}>
+                  <p style={{ fontSize: "14px", color: "#999", marginBottom: "5px" }}>
+                    Total do Pedido
+                  </p>
+                  <p style={{ fontSize: "24px", fontWeight: "700", color: "#e1306c" }}>
+                    {order.totalPrice.toLocaleString("pt-BR", {
+                      style: "currency",
+                      currency: "BRL"
+                    })}
+                  </p>
+                </div>
               </div>
 
-              <div>
-                <p style={{ fontSize: "14px", color: "#999", marginBottom: "5px" }}>
-                  Data
-                </p>
-                <p style={{ fontSize: "16px", fontWeight: "600" }}>
-                  {new Date().toLocaleDateString("pt-BR")}
-                </p>
-              </div>
+              {/* Endereço de Entrega */}
+              {order.address && (
+                <div style={{
+                  marginTop: "20px",
+                  paddingTop: "20px",
+                  borderTop: "1px solid #e0e0e0"
+                }}>
+                  <p style={{ fontSize: "14px", color: "#999", marginBottom: "10px" }}>
+                    Endereço de Entrega
+                  </p>
+                  <p style={{ fontSize: "14px", color: "#666", lineHeight: "1.6" }}>
+                    {order.address.street}<br />
+                    {order.address.complement && `${order.address.complement}`}<br />
+                    {order.address.city} - {order.address.state}<br />
+                    CEP: {order.address.zipCode}<br />
+                    {order.address.country}
+                  </p>
+                </div>
+              )}
 
-              <div>
-                <p style={{ fontSize: "14px", color: "#999", marginBottom: "5px" }}>
-                  Forma de Pagamento
+              {/* Itens do Pedido */}
+              <div style={{
+                marginTop: "20px",
+                paddingTop: "20px",
+                borderTop: "1px solid #e0e0e0"
+              }}>
+                <p style={{ fontSize: "14px", color: "#999", marginBottom: "15px" }}>
+                  Itens do Pedido ({order.items.length})
                 </p>
-                <p style={{ fontSize: "16px", fontWeight: "600" }}>
-                  Cartão de Crédito
-                </p>
-              </div>
-
-              <div>
-                <p style={{ fontSize: "14px", color: "#999", marginBottom: "5px" }}>
-                  Previsão de Entrega
-                </p>
-                <p style={{ fontSize: "16px", fontWeight: "600" }}>
-                  {new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toLocaleDateString("pt-BR")}
-                </p>
+                <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+                  {order.items.map((item, index) => (
+                    <div key={index} style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      padding: "10px",
+                      backgroundColor: "#fff",
+                      borderRadius: "4px"
+                    }}>
+                      <div style={{ textAlign: "left" }}>
+                        <p style={{ fontSize: "14px", fontWeight: "600", marginBottom: "5px" }}>
+                          {item.product.name}
+                        </p>
+                        <p style={{ fontSize: "12px", color: "#666" }}>
+                          Quantidade: {item.quantity}
+                        </p>
+                      </div>
+                      <p style={{ fontSize: "14px", fontWeight: "600", color: "#e1306c" }}>
+                        {(item.price * item.quantity).toLocaleString("pt-BR", {
+                          style: "currency",
+                          currency: "BRL"
+                        })}
+                      </p>
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
-          </div>
+          )}
 
           {/* Próximos Passos */}
           <div style={{
@@ -148,7 +282,7 @@ export const OrderSuccessPage = () => {
             flexWrap: "wrap"
           }}>
             <button
-              onClick={() => navigate("/orders")}
+              onClick={() => navigate("/profile")}
               style={{
                 padding: "15px 40px",
                 backgroundColor: "#e1306c",

@@ -5,19 +5,7 @@ import { InputText } from "primereact/inputtext";
 import { InputMask } from "primereact/inputmask";
 import { Toast } from "primereact/toast";
 import { Dialog } from "primereact/dialog";
-
-interface IAddress {
-  id: number;
-  name: string;
-  cep: string;
-  street: string;
-  number: string;
-  complement?: string;
-  neighborhood: string;
-  city: string;
-  state: string;
-  isDefault: boolean;
-}
+import AddressService, { type IAddress } from "@/services/address-service";
 
 export const AddressesPage = () => {
   const { authenticated } = useAuth();
@@ -28,17 +16,15 @@ export const AddressesPage = () => {
   const [showDialog, setShowDialog] = useState(false);
   const [editingAddress, setEditingAddress] = useState<IAddress | null>(null);
   const [loadingCep, setLoadingCep] = useState(false);
+  const [loading, setLoading] = useState(true);
   
-  const [formData, setFormData] = useState({
-    name: "",
-    cep: "",
+  const [formData, setFormData] = useState<IAddress>({
     street: "",
-    number: "",
     complement: "",
-    neighborhood: "",
+    zipCode: "",
     city: "",
     state: "",
-    isDefault: false
+    country: "Brasil"
   });
 
   useEffect(() => {
@@ -47,23 +33,27 @@ export const AddressesPage = () => {
       return;
     }
 
-    // Simular carregamento de endereços
-    const mockAddresses: IAddress[] = [
-      {
-        id: 1,
-        name: "Casa",
-        cep: "01234-567",
-        street: "Rua Exemplo",
-        number: "123",
-        complement: "Apto 45",
-        neighborhood: "Centro",
-        city: "São Paulo",
-        state: "SP",
-        isDefault: true
-      }
-    ];
-    setAddresses(mockAddresses);
+    loadAddresses();
   }, [authenticated, navigate]);
+
+  const loadAddresses = async () => {
+    try {
+      setLoading(true);
+      const response = await AddressService.findAllByAuthenticatedUser();
+      if (response.status === 200) {
+        setAddresses(response.data);
+      }
+    } catch (error) {
+      toast.current?.show({
+        severity: "error",
+        summary: "Erro",
+        detail: "Erro ao carregar endereços.",
+        life: 3000,
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const searchCep = async (cep: string) => {
     const cleanCep = cep.replace(/\D/g, "");
@@ -91,9 +81,9 @@ export const AddressesPage = () => {
       setFormData(prev => ({
         ...prev,
         street: data.logradouro || "",
-        neighborhood: data.bairro || "",
         city: data.localidade || "",
-        state: data.uf || ""
+        state: data.uf || "",
+        complement: data.complemento || prev.complement
       }));
 
       toast.current?.show({
@@ -115,7 +105,7 @@ export const AddressesPage = () => {
   };
 
   const handleCepChange = (value: string) => {
-    setFormData(prev => ({ ...prev, cep: value }));
+    setFormData(prev => ({ ...prev, zipCode: value }));
     
     const cleanCep = value.replace(/\D/g, "");
     if (cleanCep.length === 8) {
@@ -126,37 +116,23 @@ export const AddressesPage = () => {
   const handleOpenDialog = (address?: IAddress) => {
     if (address) {
       setEditingAddress(address);
-      setFormData({
-        name: address.name,
-        cep: address.cep,
-        street: address.street,
-        number: address.number,
-        complement: address.complement || "",
-        neighborhood: address.neighborhood,
-        city: address.city,
-        state: address.state,
-        isDefault: address.isDefault
-      });
+      setFormData(address);
     } else {
       setEditingAddress(null);
       setFormData({
-        name: "",
-        cep: "",
         street: "",
-        number: "",
         complement: "",
-        neighborhood: "",
+        zipCode: "",
         city: "",
         state: "",
-        isDefault: false
+        country: "Brasil"
       });
     }
     setShowDialog(true);
   };
 
-  const handleSaveAddress = () => {
-    if (!formData.name || !formData.cep || !formData.street || !formData.number || 
-        !formData.neighborhood || !formData.city || !formData.state) {
+  const handleSaveAddress = async () => {
+    if (!formData.street || !formData.zipCode || !formData.city || !formData.state) {
       toast.current?.show({
         severity: "warn",
         summary: "Atenção",
@@ -166,74 +142,69 @@ export const AddressesPage = () => {
       return;
     }
 
-    if (editingAddress) {
-      setAddresses(prev => prev.map(addr => 
-        addr.id === editingAddress.id 
-          ? { ...addr, ...formData }
-          : formData.isDefault ? { ...addr, isDefault: false } : addr
-      ));
+    try {
+      const response = await AddressService.create(formData);
+      if (response.status === 201) {
+        toast.current?.show({
+          severity: "success",
+          summary: "Sucesso",
+          detail: "Endereço adicionado!",
+          life: 2000,
+        });
+        loadAddresses();
+        setShowDialog(false);
+      }
+    } catch (error) {
       toast.current?.show({
-        severity: "success",
-        summary: "Sucesso",
-        detail: "Endereço atualizado!",
-        life: 2000,
-      });
-    } else {
-      const newAddress: IAddress = {
-        id: Date.now(),
-        ...formData
-      };
-      
-      setAddresses(prev => {
-        if (formData.isDefault) {
-          return [...prev.map(addr => ({ ...addr, isDefault: false })), newAddress];
-        }
-        return [...prev, newAddress];
-      });
-      
-      toast.current?.show({
-        severity: "success",
-        summary: "Sucesso",
-        detail: "Endereço adicionado!",
-        life: 2000,
+        severity: "error",
+        summary: "Erro",
+        detail: "Erro ao salvar endereço.",
+        life: 3000,
       });
     }
-
-    setShowDialog(false);
   };
 
-  const handleDeleteAddress = (id: number) => {
-    setAddresses(prev => prev.filter(addr => addr.id !== id));
-    toast.current?.show({
-      severity: "success",
-      summary: "Sucesso",
-      detail: "Endereço removido!",
-      life: 2000,
-    });
-  };
-
-  const handleSetDefault = (id: number) => {
-    setAddresses(prev => prev.map(addr => ({
-      ...addr,
-      isDefault: addr.id === id
-    })));
-    toast.current?.show({
-      severity: "success",
-      summary: "Sucesso",
-      detail: "Endereço padrão atualizado!",
-      life: 2000,
-    });
+  const handleDeleteAddress = async (id: number) => {
+    try {
+      await AddressService.remove(id);
+      toast.current?.show({
+        severity: "success",
+        summary: "Sucesso",
+        detail: "Endereço removido!",
+        life: 2000,
+      });
+      loadAddresses();
+    } catch (error) {
+      toast.current?.show({
+        severity: "error",
+        summary: "Erro",
+        detail: "Erro ao remover endereço.",
+        life: 3000,
+      });
+    }
   };
 
   if (!authenticated) {
     return null;
   }
 
+  if (loading) {
+    return (
+      <div style={{ 
+        display: "flex", 
+        justifyContent: "center", 
+        alignItems: "center", 
+        minHeight: "100vh" 
+      }}>
+        <i className="pi pi-spin pi-spinner" style={{ fontSize: "3rem" }} />
+      </div>
+    );
+  }
+
   return (
     <div style={{ backgroundColor: "#f5f5f5", minHeight: "100vh", paddingBottom: "40px" }}>
       <Toast ref={toast} />
       
-      {/* Breadcrumb */}
       <div style={{
         backgroundColor: "#fff",
         padding: "20px",
@@ -281,8 +252,6 @@ export const AddressesPage = () => {
               transition: "background-color 0.3s ease",
               letterSpacing: "1px"
             }}
-            onMouseEnter={(e) => e.currentTarget.style.backgroundColor = "#c91e5a"}
-            onMouseLeave={(e) => e.currentTarget.style.backgroundColor = "#e1306c"}
           >
             <i className="pi pi-plus" style={{ marginRight: "10px" }} />
             Novo Endereço
@@ -333,33 +302,17 @@ export const AddressesPage = () => {
                   padding: "25px",
                   borderRadius: "8px",
                   boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
-                  border: address.isDefault ? "2px solid #e1306c" : "2px solid transparent",
+                  border: "2px solid transparent",
                   position: "relative"
                 }}
               >
-                {address.isDefault && (
-                  <div style={{
-                    position: "absolute",
-                    top: "15px",
-                    right: "15px",
-                    padding: "5px 12px",
-                    backgroundColor: "#e1306c",
-                    color: "#fff",
-                    fontSize: "12px",
-                    fontWeight: "600",
-                    borderRadius: "12px"
-                  }}>
-                    PADRÃO
-                  </div>
-                )}
-
                 <h3 style={{
                   fontSize: "18px",
                   fontWeight: "700",
                   marginBottom: "15px",
                   color: "#333"
                 }}>
-                  {address.name}
+                  Endereço
                 </h3>
 
                 <p style={{
@@ -368,11 +321,11 @@ export const AddressesPage = () => {
                   lineHeight: "1.8",
                   marginBottom: "20px"
                 }}>
-                  {address.street}, {address.number}
+                  {address.street}
                   {address.complement && ` - ${address.complement}`}<br />
-                  {address.neighborhood}<br />
                   {address.city} - {address.state}<br />
-                  CEP: {address.cep}
+                  CEP: {address.zipCode}<br />
+                  {address.country}
                 </p>
 
                 <div style={{
@@ -380,63 +333,8 @@ export const AddressesPage = () => {
                   gap: "10px",
                   flexWrap: "wrap"
                 }}>
-                  {!address.isDefault && (
-                    <button
-                      onClick={() => handleSetDefault(address.id)}
-                      style={{
-                        flex: 1,
-                        padding: "10px",
-                        backgroundColor: "#fff",
-                        color: "#e1306c",
-                        border: "1px solid #e1306c",
-                        borderRadius: "4px",
-                        fontSize: "12px",
-                        fontWeight: "600",
-                        cursor: "pointer",
-                        transition: "all 0.3s ease"
-                      }}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.backgroundColor = "#e1306c";
-                        e.currentTarget.style.color = "#fff";
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.backgroundColor = "#fff";
-                        e.currentTarget.style.color = "#e1306c";
-                      }}
-                    >
-                      Tornar Padrão
-                    </button>
-                  )}
-                  
                   <button
-                    onClick={() => handleOpenDialog(address)}
-                    style={{
-                      flex: 1,
-                      padding: "10px",
-                      backgroundColor: "#fff",
-                      color: "#666",
-                      border: "1px solid #ddd",
-                      borderRadius: "4px",
-                      fontSize: "12px",
-                      fontWeight: "600",
-                      cursor: "pointer",
-                      transition: "all 0.3s ease"
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.borderColor = "#e1306c";
-                      e.currentTarget.style.color = "#e1306c";
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.borderColor = "#ddd";
-                      e.currentTarget.style.color = "#666";
-                    }}
-                  >
-                    <i className="pi pi-pencil" style={{ marginRight: "5px" }} />
-                    Editar
-                  </button>
-                  
-                  <button
-                    onClick={() => handleDeleteAddress(address.id)}
+                    onClick={() => handleDeleteAddress(address.id!)}
                     style={{
                       padding: "10px",
                       backgroundColor: "#fff",
@@ -446,14 +344,6 @@ export const AddressesPage = () => {
                       fontSize: "12px",
                       cursor: "pointer",
                       transition: "all 0.3s ease"
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.backgroundColor = "#dc3545";
-                      e.currentTarget.style.color = "#fff";
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.backgroundColor = "#fff";
-                      e.currentTarget.style.color = "#dc3545";
                     }}
                   >
                     <i className="pi pi-trash" />
@@ -465,7 +355,6 @@ export const AddressesPage = () => {
         )}
       </div>
 
-      {/* Dialog de Adicionar/Editar Endereço */}
       <Dialog
         header={editingAddress ? "Editar Endereço" : "Novo Endereço"}
         visible={showDialog}
@@ -505,22 +394,10 @@ export const AddressesPage = () => {
         <div style={{ display: "flex", flexDirection: "column", gap: "15px" }}>
           <div>
             <label style={{ display: "block", marginBottom: "5px", fontWeight: "600" }}>
-              Nome do Endereço *
-            </label>
-            <InputText
-              value={formData.name}
-              onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
-              placeholder="Ex: Casa, Trabalho"
-              style={{ width: "100%" }}
-            />
-          </div>
-
-          <div>
-            <label style={{ display: "block", marginBottom: "5px", fontWeight: "600" }}>
               CEP *
             </label>
             <InputMask
-              value={formData.cep}
+              value={formData.zipCode}
               onChange={(e) => handleCepChange(e.value || "")}
               mask="99999-999"
               placeholder="00000-000"
@@ -540,37 +417,13 @@ export const AddressesPage = () => {
             />
           </div>
 
-          <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr", gap: "15px" }}>
-            <div>
-              <label style={{ display: "block", marginBottom: "5px", fontWeight: "600" }}>
-                Número *
-              </label>
-              <InputText
-                value={formData.number}
-                onChange={(e) => setFormData(prev => ({ ...prev, number: e.target.value }))}
-                style={{ width: "100%" }}
-              />
-            </div>
-
-            <div>
-              <label style={{ display: "block", marginBottom: "5px", fontWeight: "600" }}>
-                Complemento
-              </label>
-              <InputText
-                value={formData.complement}
-                onChange={(e) => setFormData(prev => ({ ...prev, complement: e.target.value }))}
-                style={{ width: "100%" }}
-              />
-            </div>
-          </div>
-
           <div>
             <label style={{ display: "block", marginBottom: "5px", fontWeight: "600" }}>
-              Bairro *
+              Complemento
             </label>
             <InputText
-              value={formData.neighborhood}
-              onChange={(e) => setFormData(prev => ({ ...prev, neighborhood: e.target.value }))}
+              value={formData.complement}
+              onChange={(e) => setFormData(prev => ({ ...prev, complement: e.target.value }))}
               style={{ width: "100%" }}
             />
           </div>
@@ -600,14 +453,15 @@ export const AddressesPage = () => {
             </div>
           </div>
 
-          <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-            <input
-              type="checkbox"
-              checked={formData.isDefault}
-              onChange={(e) => setFormData(prev => ({ ...prev, isDefault: e.target.checked }))}
-              style={{ accentColor: "#e1306c" }}
+          <div>
+            <label style={{ display: "block", marginBottom: "5px", fontWeight: "600" }}>
+              País *
+            </label>
+            <InputText
+              value={formData.country}
+              onChange={(e) => setFormData(prev => ({ ...prev, country: e.target.value }))}
+              style={{ width: "100%" }}
             />
-            <label>Definir como endereço padrão</label>
           </div>
         </div>
       </Dialog>

@@ -30,13 +30,10 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         const token = JSON.parse(storedToken);
         const user = JSON.parse(storedUser);
         
-        // Verificar se o token não está expirado (verificação básica)
-        // O interceptor do axios vai limpar se estiver expirado
         setAuthenticatedUser(user);
         setAuthenticated(true);
         api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
       } catch (error) {
-        // Se houver erro ao parsear, limpar tudo
         localStorage.removeItem("token");
         localStorage.removeItem("user");
         delete api.defaults.headers.common["Authorization"];

@@ -98,7 +98,7 @@ export const RegisterPage = () => {
         </div>
 
         <form onSubmit={handleSubmit(onSubmit)}>
-          {/* Display Name */}
+         
           <div style={{ marginBottom: "25px" }}>
             <label 
               htmlFor="displayName" 

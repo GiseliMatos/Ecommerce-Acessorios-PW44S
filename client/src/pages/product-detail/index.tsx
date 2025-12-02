@@ -117,7 +117,7 @@ export const ProductDetailPage = () => {
             <div
               style={{
                 width: "100%",
-                height: "500px",
+                height: "600px",
                 backgroundColor: "#fff",
                 borderRadius: "8px",
                 display: "flex",
@@ -142,31 +142,6 @@ export const ProductDetailPage = () => {
               )}
             </div>
 
-
-            {/* Miniaturas (placeholder) */}
-            <div style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(4, 1fr)",
-              gap: "10px"
-            }}>
-              {[1, 2, 3, 4].map(i => (
-                <div key={i} style={{
-                  height: "100px",
-                  backgroundColor: "#f5f5f5",
-                  borderRadius: "4px",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  cursor: "pointer",
-                  border: "2px solid transparent",
-                  transition: "border-color 0.3s ease"
-                }}
-                  onMouseEnter={(e) => e.currentTarget.style.borderColor = "#e1306c"}
-                  onMouseLeave={(e) => e.currentTarget.style.borderColor = "transparent"}>
-                  <i className="pi pi-image" style={{ fontSize: "24px", color: "#ccc" }} />
-                </div>
-              ))}
-            </div>
           </div>
 
           {/* Informações do Produto */}
@@ -399,7 +374,6 @@ export const ProductDetailPage = () => {
             gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))",
             gap: "20px"
           }}>
-            {/* Placeholder para produtos relacionados */}
             {[1, 2, 3, 4].map(i => (
               <div key={i} style={{
                 backgroundColor: "#fff",

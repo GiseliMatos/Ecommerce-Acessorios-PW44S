@@ -216,12 +216,9 @@ export const CartPage = () => {
                         buttonLayout="horizontal"
                         decrementButtonClassName="p-button-secondary"
                         incrementButtonClassName="p-button-secondary"
-                        style={{ width: "70px", marginRight: "80px" }}           // largura do componente
-                        inputStyle={{ width: "40px" }}    // largura do campo numérico
+                        style={{ width: "70px", marginRight: "80px" }}  
+                        inputStyle={{ width: "40px" }}
                       />
-
-
-
                     </div>
                     {/* Preço Unitário */}
                     <div>
@@ -235,8 +232,6 @@ export const CartPage = () => {
                     </div>
                   </div>
                 </div>
-
-
                 {/* Preço Total e Remover */}
                 <div style={{
                   display: "flex",
@@ -361,7 +356,7 @@ export const CartPage = () => {
                 }}>
                   <span style={{ fontSize: "14px", color: "#666" }}>Frete</span>
                   <span style={{ fontSize: "14px", color: getTotalPrice() >= 149 ? "#28a745" : "#666" }}>
-                    {getTotalPrice() >= 149 ? "GRÁTIS" : "Calcular"}
+                    {getTotalPrice() >= 149 ? "GRÁTIS" : "A Calcular"}
                   </span>
                 </div>
               </div>

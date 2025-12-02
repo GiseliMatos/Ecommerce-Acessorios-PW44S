@@ -1,9 +1,35 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useRef, useState } from "react";
+import { Carousel } from "primereact/carousel";
+import { Toast } from "primereact/toast";
 import { useNavigate } from "react-router-dom";
+
+import ProductService from "@/services/product-service";
+import type { IProduct } from "@/commons/types";
 
 export const HomePage = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const navigate = useNavigate();
+  const toast = useRef<Toast>(null);
+
+  const handleImageClick = (link: string) => {
+    navigate(link);
+  };
+
+  const prevSlide = () => {
+    setCurrentSlide((prev) =>
+      prev === 0 ? bannerImages.length - 1 : prev - 1
+    );
+  };
+
+  const nextSlide = () => {
+    setCurrentSlide((prev) =>
+      prev === bannerImages.length - 1 ? 0 : prev + 1
+    );
+  };
+
+  const goToSlide = (index: number) => {
+    setCurrentSlide(index);
+  };
 
   // Imagens banner 
   const bannerImages = [
@@ -29,38 +55,126 @@ export const HomePage = () => {
     },
   ];
 
-  // Auto-play do carrossel
+  const FEATURED_IDS = [1, 6, 3, 12, 19, 25, 35, 36];
+
+  const [products, setProducts] = useState<IProduct[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  // buscar produtos
   useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % bannerImages.length);
-    }, 5000);
+    const loadFeaturedProducts = async () => {
+      try {
+        setLoading(true);
 
-    return () => clearInterval(interval);
-  }, [bannerImages.length]);
+        const response = await ProductService.findAll();
 
-  const nextSlide = () => {
-    setCurrentSlide((prev) => (prev + 1) % bannerImages.length);
+        if (response.status === 200 && Array.isArray(response.data)) {
+          const all = response.data as IProduct[];
+          const filtered = all.filter(p => FEATURED_IDS.includes(p.id));
+
+          setProducts(filtered);
+        } else {
+          toast.current?.show({
+            severity: "error",
+            summary: "Erro",
+            detail: "Não foi possível carregar os produtos.",
+            life: 3000,
+          });
+        }
+      } catch (error) {
+        console.error(error);
+        toast.current?.show({
+          severity: "error",
+          summary: "Erro",
+          detail: "Falha ao buscar produtos.",
+          life: 3000,
+        });
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadFeaturedProducts();
+  }, []);
+
+  // templete produtos
+  const productTemplate = (product: IProduct) => {
+    const img = product.urlImg || "https://w7.pngwing.com/pngs/430/832/png-transparent-web-development-internet-organization-pond-miscellaneous-angle-web-design.png";
+
+    return (
+      <div
+        key={product.id}
+        style={{
+          backgroundColor: "#fff",
+          borderRadius: "8px",
+          overflow: "hidden",
+          padding: "10px",
+          cursor: "pointer",
+          marginLeft: "10px",
+          marginTop: "10px",
+          marginBottom: "10px",
+          boxShadow: "0 2px 8px rgba(0,0,0,0.1)"
+        }}
+        onClick={() => navigate(`/product/${product.id}`)}
+      >
+        <div style={{ height: "220px", display: "flex", justifyContent: "center", alignItems: "center" }}>
+          <img
+            src={img}
+            alt={product.name}
+            style={{ width: "100%", height: "100%", objectFit: "contain" }}
+          />
+        </div>
+
+        <div style={{ padding: "15px" }}>
+          <p style={{
+            fontSize: "12px",
+            textTransform: "uppercase",
+            color: "#666",
+            marginBottom: "5px"
+          }}>
+            {product.category?.name || "Sem categoria"}
+          </p>
+
+          <h3 style={{
+            fontSize: "16px",
+            fontWeight: "600",
+            marginBottom: "5px",
+            overflow: "hidden",
+            textOverflow: "ellipsis"
+          }}>
+            {product.name}
+          </h3>
+
+          <p style={{
+            fontSize: "20px",
+            fontWeight: "700",
+            color: "#e1306c"
+          }}>
+            {product.price.toLocaleString("pt-BR", {
+              style: "currency",
+              currency: "BRL"
+            })}
+          </p>
+        </div>
+      </div>
+    );
   };
 
-  const prevSlide = () => {
-    setCurrentSlide((prev) => (prev - 1 + bannerImages.length) % bannerImages.length);
-  };
-
-  const goToSlide = (index: number) => {
-    setCurrentSlide(index);
-  };
-
-  const handleImageClick = (link: string) => {
-    navigate(link);
-  };
+  const responsiveOptions = [
+    { breakpoint: "1400px", numVisible: 4, numScroll: 1 },
+    { breakpoint: "1024px", numVisible: 2, numScroll: 1 },
+    { breakpoint: "768px", numVisible: 1, numScroll: 1 },
+  ];
 
   return (
     <>
+      <Toast ref={toast} />
+
       {/* Banner Principal */}
-      <div style={{ 
-        position: "relative", 
-        width: "100%", 
-        height: "70vh", 
+      <div style={{
+        position: "relative",
+        width: "100%",
+        height: "70vh",
         maxHeight: "600px",
         overflow: "hidden",
         marginTop: "-40px",
@@ -259,14 +373,14 @@ export const HomePage = () => {
                 letterSpacing: "1px",
                 transition: "all 0.3s ease"
               }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = "#e1306c";
-                e.currentTarget.style.borderColor = "#e1306c";
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundColor = "transparent";
-                e.currentTarget.style.borderColor = "#ffffff";
-              }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = "#e1306c";
+                  e.currentTarget.style.borderColor = "#e1306c";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = "transparent";
+                  e.currentTarget.style.borderColor = "#ffffff";
+                }}
               >
                 Descubra
               </button>
@@ -275,7 +389,7 @@ export const HomePage = () => {
 
           {/* Card 2 - Brincos */}
           <div
-            onClick={() => navigate("/products")}
+            onClick={() => navigate("/products/category/2")}
             style={{
               position: "relative",
               height: "450px",
@@ -339,14 +453,14 @@ export const HomePage = () => {
                 letterSpacing: "1px",
                 transition: "all 0.3s ease"
               }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = "#e1306c";
-                e.currentTarget.style.borderColor = "#e1306c";
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundColor = "transparent";
-                e.currentTarget.style.borderColor = "#ffffff";
-              }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = "#e1306c";
+                  e.currentTarget.style.borderColor = "#e1306c";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = "transparent";
+                  e.currentTarget.style.borderColor = "#ffffff";
+                }}
               >
                 Descubra
               </button>
@@ -419,14 +533,14 @@ export const HomePage = () => {
                 letterSpacing: "1px",
                 transition: "all 0.3s ease"
               }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = "#e1306c";
-                e.currentTarget.style.borderColor = "#e1306c";
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundColor = "transparent";
-                e.currentTarget.style.borderColor = "#ffffff";
-              }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = "#e1306c";
+                  e.currentTarget.style.borderColor = "#e1306c";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = "transparent";
+                  e.currentTarget.style.borderColor = "#ffffff";
+                }}
               >
                 Descubra
               </button>
@@ -583,287 +697,45 @@ export const HomePage = () => {
         </div>
       </div>
 
-      {/* Seção "Você vai gostar" - Carrossel de Produtos */}
+      {/* Seção de Produtos em destaque */}
+
       <div style={{
-        padding: "60px 20px",
         maxWidth: "1800px",
-        margin: "0 auto"
+        margin: "50px auto",
+        padding: "0 20px"
       }}>
         <h2 style={{
-          fontSize: "32px",
-          fontWeight: "700",
+          fontSize: "28px",
           textAlign: "center",
-          marginBottom: "50px",
-          textTransform: "uppercase",
-          letterSpacing: "2px"
-        }}>VOCÊ VAI GOSTAR!</h2>
-        
-        <div style={{
-          position: "relative",
-          overflow: "hidden"
+          marginBottom: "30px",
+          fontWeight: "700"
         }}>
-          <div style={{
-            display: "flex",
-            gap: "20px",
-            animation: "scroll 20s linear infinite",
-            width: "fit-content"
-          }}>
-            {/* Produtos - duplicados para efeito contínuo */}
-            {[...Array(2)].map((_, setIndex) => (
-              <React.Fragment key={setIndex}>
-                {/* Produto 1 */}
-                <div style={{
-                  minWidth: "280px",
-                  backgroundColor: "#fff",
-                  borderRadius: "8px",
-                  overflow: "hidden",
-                  boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
-                  cursor: "pointer",
-                  transition: "transform 0.3s ease"
-                }}
-                onMouseEnter={(e) => e.currentTarget.style.transform = "translateY(-5px)"}
-                onMouseLeave={(e) => e.currentTarget.style.transform = "translateY(0)"}
-                onClick={() => navigate("/products")}>
-                  <div style={{
-                    width: "100%",
-                    height: "280px",
-                    backgroundImage: "url(/assets/images/colar.webp)",
-                    backgroundSize: "cover",
-                    backgroundPosition: "center"
-                  }} />
-                  <div style={{ padding: "20px" }}>
-                    <p style={{
-                      fontSize: "12px",
-                      color: "#999",
-                      marginBottom: "8px",
-                      textTransform: "uppercase"
-                    }}>Novidades semana</p>
-                    <h3 style={{
-                      fontSize: "16px",
-                      fontWeight: "600",
-                      marginBottom: "12px",
-                      color: "#333"
-                    }}>Conjunto Ponto de Luz</h3>
-                    <p style={{
-                      fontSize: "20px",
-                      fontWeight: "700",
-                      color: "#e1306c",
-                      marginBottom: "15px"
-                    }}>R$ 79,90</p>
-                    <button style={{
-                      width: "100%",
-                      backgroundColor: "#C9A063",
-                      color: "#fff",
-                      border: "none",
-                      padding: "12px",
-                      fontSize: "14px",
-                      fontWeight: "600",
-                      textTransform: "uppercase",
-                      cursor: "pointer",
-                      transition: "background-color 0.3s ease"
-                    }}
-                    onMouseEnter={(e) => e.currentTarget.style.backgroundColor = "#b8904f"}
-                    onMouseLeave={(e) => e.currentTarget.style.backgroundColor = "#C9A063"}>
-                      ADICIONAR AO CARRINHO
-                    </button>
-                  </div>
-                </div>
+          PRODUTOS EM DESTAQUE
+        </h2>
 
-                {/* Produto 2 */}
-                <div style={{
-                  minWidth: "280px",
-                  backgroundColor: "#fff",
-                  borderRadius: "8px",
-                  overflow: "hidden",
-                  boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
-                  cursor: "pointer",
-                  transition: "transform 0.3s ease"
-                }}
-                onMouseEnter={(e) => e.currentTarget.style.transform = "translateY(-5px)"}
-                onMouseLeave={(e) => e.currentTarget.style.transform = "translateY(0)"}
-                onClick={() => navigate("/products")}>
-                  <div style={{
-                    width: "100%",
-                    height: "280px",
-                    backgroundImage: "url(/assets/images/brinco.webp)",
-                    backgroundSize: "cover",
-                    backgroundPosition: "center"
-                  }} />
-                  <div style={{ padding: "20px" }}>
-                    <p style={{
-                      fontSize: "12px",
-                      color: "#999",
-                      marginBottom: "8px",
-                      textTransform: "uppercase"
-                    }}>Novidades semana</p>
-                    <h3 style={{
-                      fontSize: "16px",
-                      fontWeight: "600",
-                      marginBottom: "12px",
-                      color: "#333"
-                    }}>Conjunto Infinito</h3>
-                    <p style={{
-                      fontSize: "20px",
-                      fontWeight: "700",
-                      color: "#e1306c",
-                      marginBottom: "15px"
-                    }}>R$ 119,90</p>
-                    <button style={{
-                      width: "100%",
-                      backgroundColor: "#C9A063",
-                      color: "#fff",
-                      border: "none",
-                      padding: "12px",
-                      fontSize: "14px",
-                      fontWeight: "600",
-                      textTransform: "uppercase",
-                      cursor: "pointer",
-                      transition: "background-color 0.3s ease"
-                    }}
-                    onMouseEnter={(e) => e.currentTarget.style.backgroundColor = "#b8904f"}
-                    onMouseLeave={(e) => e.currentTarget.style.backgroundColor = "#C9A063"}>
-                      ADICIONAR AO CARRINHO
-                    </button>
-                  </div>
-                </div>
-
-                {/* Produto 3 */}
-                <div style={{
-                  minWidth: "280px",
-                  backgroundColor: "#fff",
-                  borderRadius: "8px",
-                  overflow: "hidden",
-                  boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
-                  cursor: "pointer",
-                  transition: "transform 0.3s ease"
-                }}
-                onMouseEnter={(e) => e.currentTarget.style.transform = "translateY(-5px)"}
-                onMouseLeave={(e) => e.currentTarget.style.transform = "translateY(0)"}
-                onClick={() => navigate("/products")}>
-                  <div style={{
-                    width: "100%",
-                    height: "280px",
-                    backgroundImage: "url(/assets/images/anel.webp)",
-                    backgroundSize: "cover",
-                    backgroundPosition: "center"
-                  }} />
-                  <div style={{ padding: "20px" }}>
-                    <p style={{
-                      fontSize: "12px",
-                      color: "#999",
-                      marginBottom: "8px",
-                      textTransform: "uppercase"
-                    }}>Novidades semana</p>
-                    <h3 style={{
-                      fontSize: "16px",
-                      fontWeight: "600",
-                      marginBottom: "12px",
-                      color: "#333"
-                    }}>Argola Trabalhada</h3>
-                    <p style={{
-                      fontSize: "20px",
-                      fontWeight: "700",
-                      color: "#e1306c",
-                      marginBottom: "15px"
-                    }}>R$ 59,90</p>
-                    <button style={{
-                      width: "100%",
-                      backgroundColor: "#C9A063",
-                      color: "#fff",
-                      border: "none",
-                      padding: "12px",
-                      fontSize: "14px",
-                      fontWeight: "600",
-                      textTransform: "uppercase",
-                      cursor: "pointer",
-                      transition: "background-color 0.3s ease"
-                    }}
-                    onMouseEnter={(e) => e.currentTarget.style.backgroundColor = "#b8904f"}
-                    onMouseLeave={(e) => e.currentTarget.style.backgroundColor = "#C9A063"}>
-                      ADICIONAR AO CARRINHO
-                    </button>
-                  </div>
-                </div>
-
-                {/* Produto 4 */}
-                <div style={{
-                  minWidth: "280px",
-                  backgroundColor: "#fff",
-                  borderRadius: "8px",
-                  overflow: "hidden",
-                  boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
-                  cursor: "pointer",
-                  transition: "transform 0.3s ease"
-                }}
-                onMouseEnter={(e) => e.currentTarget.style.transform = "translateY(-5px)"}
-                onMouseLeave={(e) => e.currentTarget.style.transform = "translateY(0)"}
-                onClick={() => navigate("/products")}>
-                  <div style={{
-                    width: "100%",
-                    height: "280px",
-                    backgroundImage: "url(/assets/images/colares.webp)",
-                    backgroundSize: "cover",
-                    backgroundPosition: "center"
-                  }} />
-                  <div style={{ padding: "20px" }}>
-                    <p style={{
-                      fontSize: "12px",
-                      color: "#999",
-                      marginBottom: "8px",
-                      textTransform: "uppercase"
-                    }}>Novidades semana</p>
-                    <h3 style={{
-                      fontSize: "16px",
-                      fontWeight: "600",
-                      marginBottom: "12px",
-                      color: "#333"
-                    }}>Conjunto de Esferas</h3>
-                    <p style={{
-                      fontSize: "20px",
-                      fontWeight: "700",
-                      color: "#e1306c",
-                      marginBottom: "15px"
-                    }}>R$ 119,90</p>
-                    <button style={{
-                      width: "100%",
-                      backgroundColor: "#C9A063",
-                      color: "#fff",
-                      border: "none",
-                      padding: "12px",
-                      fontSize: "14px",
-                      fontWeight: "600",
-                      textTransform: "uppercase",
-                      cursor: "pointer",
-                      transition: "background-color 0.3s ease"
-                    }}
-                    onMouseEnter={(e) => e.currentTarget.style.backgroundColor = "#b8904f"}
-                    onMouseLeave={(e) => e.currentTarget.style.backgroundColor = "#C9A063"}>
-                      ADICIONAR AO CARRINHO
-                    </button>
-                  </div>
-                </div>
-              </React.Fragment>
-            ))}
-          </div>
-        </div>
-
-        <style>{`
-          @keyframes scroll {
-            0% {
-              transform: translateX(0);
-            }
-            100% {
-              transform: translateX(calc(-280px * 4 - 80px));
-            }
-          }
-        `}</style>
+        {loading ? (
+          <p>Carregando produtos...</p>
+        ) : products.length === 0 ? (
+          <p>Nenhum produto encontrado.</p>
+        ) : (
+          <Carousel
+            value={products}
+            numVisible={5}
+            numScroll={1}
+            responsiveOptions={responsiveOptions}
+            itemTemplate={productTemplate}
+            circular
+            autoplayInterval={4000}
+          />
+        )}
       </div>
 
       {/* Seção Newsletter */}
       <div style={{
         backgroundColor: "#fff",
         padding: "80px 20px",
-        textAlign: "center"
+        textAlign: "center",
+        marginTop: "-70px"
       }}>
         <div style={{
           maxWidth: "800px",
@@ -882,7 +754,7 @@ export const HomePage = () => {
             marginBottom: "40px",
             lineHeight: "1.6"
           }}>Cadastre-se para receber as novidades e ganhe 15% na primeira compra!</p>
-          
+
           <div style={{
             display: "flex",
             gap: "15px",
@@ -934,8 +806,8 @@ export const HomePage = () => {
               transition: "background-color 0.3s ease",
               letterSpacing: "1px"
             }}
-            onMouseEnter={(e) => e.currentTarget.style.backgroundColor = "#c91e5a"}
-            onMouseLeave={(e) => e.currentTarget.style.backgroundColor = "#e1306c"}>
+              onMouseEnter={(e) => e.currentTarget.style.backgroundColor = "#c91e5a"}
+              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = "#e1306c"}>
               Cadastrar
             </button>
           </div>

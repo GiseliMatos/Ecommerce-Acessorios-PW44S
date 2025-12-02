@@ -6,6 +6,7 @@ import CategoryService from "@/services/category-service";
 import { Toast } from "primereact/toast";
 import { Paginator } from "primereact/paginator";
 import { Dropdown } from "primereact/dropdown";
+import { useCart } from "@/context/hooks/use-cart";
 
 export const ProductListPage = () => {
   const [products, setProducts] = useState<IProduct[]>([]);
@@ -22,27 +23,24 @@ export const ProductListPage = () => {
   const toast = useRef<Toast>(null);
   const { categoryId } = useParams();
   const [searchParams] = useSearchParams();
+  const { addToCart } = useCart();
 
-  // Quando entrar pela URL /products/category/xx → já pré-seleciona
   useEffect(() => {
     if (categoryId) {
       setSelectedCategory(Number(categoryId));
     }
   }, [categoryId]);
 
-  // Carrega produtos e categorias quando mudar selectedCategory
   useEffect(() => {
     loadData();
   }, [selectedCategory]);
 
-  // Reaplica ordenação e busca sempre que produtos ou sortOrder mudar
   useEffect(() => {
     filterAndSortProducts();
   }, [products, sortOrder, searchParams]);
 
   const loadData = async () => {
     try {
-      // Carrega categorias
       const categoriesResponse = await CategoryService.findAll();
       if (categoriesResponse.status === 200) {
         setCategories(
@@ -50,7 +48,6 @@ export const ProductListPage = () => {
         );
       }
 
-      // Carrega produtos filtrados POR CATEGORIA ou todos
       let productsResponse;
 
       if (selectedCategory !== null) {
@@ -78,8 +75,6 @@ export const ProductListPage = () => {
 
   const filterAndSortProducts = () => {
     let filtered = [...products];
-
-    // Filtro de busca por nome
     const searchTerm = searchParams.get("search");
     if (searchTerm) {
       filtered = filtered.filter(product =>
@@ -87,7 +82,6 @@ export const ProductListPage = () => {
       );
     }
 
-    // Ordenação
     switch (sortOrder) {
       case "price-asc":
         filtered.sort((a, b) => a.price - b.price);
@@ -402,7 +396,16 @@ export const ProductListPage = () => {
                         </p>
 
                         <button
-                          onClick={(e) => e.stopPropagation()}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            addToCart(product, 1);
+                            toast.current?.show({
+                              severity: "success",
+                              summary: "Sucesso",
+                              detail: "Produto adicionado ao carrinho!",
+                              life: 2000,
+                            });
+                          }}
                           style={{
                             width: "100%",
                             padding: "12px",
@@ -415,6 +418,8 @@ export const ProductListPage = () => {
                             borderRadius: "4px",
                             transition: "background-color 0.3s"
                           }}
+                          onMouseEnter={(e) => e.currentTarget.style.backgroundColor = "#b8904f"}
+                          onMouseLeave={(e) => e.currentTarget.style.backgroundColor = "#C9A063"}
                         >
                           ADICIONAR AO CARRINHO
                         </button>
@@ -438,7 +443,6 @@ export const ProductListPage = () => {
               </>
             )}
           </div>
-
         </div>
       </div>
     </div>

@@ -25,8 +25,8 @@ export const LoginPage = () => {
     setLoading(true);
     try {
       const response = await login(userLogin);
-      if (response.status === 200 && response.data) {                
-        const authenticationResponse = response.data as AuthenticationResponse; 
+      if (response.status === 200 && response.data) {
+        const authenticationResponse = response.data as AuthenticationResponse;
         handleLogin(authenticationResponse);
         toast.current?.show({
           severity: "success",
