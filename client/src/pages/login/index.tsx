@@ -100,7 +100,6 @@ export const LoginPage = () => {
         </div>
 
         <form onSubmit={handleSubmit(onSubmit)}>
-          {/* Username */}
           <div style={{ marginBottom: "25px" }}>
             <label 
               htmlFor="username" 
@@ -145,7 +144,6 @@ export const LoginPage = () => {
             )}
           </div>
 
-          {/* Password */}
           <div style={{ marginBottom: "30px" }}>
             <label 
               htmlFor="password" 
@@ -193,7 +191,6 @@ export const LoginPage = () => {
             )}
           </div>
 
-          {/* Submit Button */}
           <Button
             type="submit"
             label="ENTRAR"
@@ -224,7 +221,6 @@ export const LoginPage = () => {
           />
         </form>
 
-        {/* Register Link */}
         <div style={{
           textAlign: "center",
           marginTop: "30px",

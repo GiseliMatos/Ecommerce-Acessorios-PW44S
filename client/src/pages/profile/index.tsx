@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/context/hooks/use-auth";
 import { Toast } from "primereact/toast";
-import { Dialog } from "primereact/dialog"; // Importando o Dialog
+import { Dialog } from "primereact/dialog"; 
 import OrderService, { type IOrder } from "@/services/order-service";
 import AddressService, { type IAddress } from "@/services/address-service";
 
@@ -71,7 +71,7 @@ export const ProfilePage = () => {
       case "standard": return "Padrão";
       case "express": return "Expresso";
       case "pickup": return "Retirar na Loja";
-      case "ENTREGA_NORMAL": return "Padrão"; // Caso venha do backend assim
+      case "ENTREGA_NORMAL": return "Padrão"; 
       case "ENTREGA_EXPRESSA": return "Expresso";
       case "RETIRADA_LOJA": return "Retirar na Loja";
       default: return formaEntrega;
@@ -95,7 +95,6 @@ export const ProfilePage = () => {
 
     return (
       <div style={{ padding: "10px" }}>
-        {/* Cabeçalho do Detalhe */}
         <div style={{ 
             display: "grid", 
             gridTemplateColumns: "repeat(auto-fit, minmax(140px, 1fr))", 
@@ -129,7 +128,6 @@ export const ProfilePage = () => {
             </div>
         </div>
 
-        {/* Lista de Itens */}
         <div style={{ marginBottom: "20px" }}>
             <h4 style={{marginBottom: "15px", fontSize: "16px", fontWeight: "700", borderBottom: "1px solid #eee", paddingBottom: "10px"}}>
                 Itens do Pedido
@@ -157,7 +155,6 @@ export const ProfilePage = () => {
             </div>
         </div>
         
-        {/* Endereço de Entrega */}
         {selectedOrder.address && (
             <div style={{ borderTop: "1px solid #eee", paddingTop: "15px" }}>
                 <h4 style={{marginBottom: "10px", fontSize: "16px", fontWeight: "700"}}>Endereço de Entrega</h4>
@@ -187,7 +184,6 @@ export const ProfilePage = () => {
         {renderOrderDetails()}
       </Dialog>
 
-      {/* Breadcrumb */}
       <div style={{
         backgroundColor: "#fff",
         padding: "20px",
@@ -203,7 +199,6 @@ export const ProfilePage = () => {
       </div>
 
       <div style={{ maxWidth: "1400px", margin: "0 auto", padding: "40px 20px" }}>
-        {/* Header do Usuário */}
         <div style={{
           backgroundColor: "#fff",
           padding: "30px",
@@ -241,14 +236,12 @@ export const ProfilePage = () => {
           </div>
         </div>
 
-        {/* Tabs */}
         <div style={{
           backgroundColor: "#fff",
           borderRadius: "8px",
           boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
           overflow: "hidden"
         }}>
-          {/* Tab Headers */}
           <div style={{
             display: "flex",
             borderBottom: "2px solid #e0e0e0",
@@ -295,9 +288,7 @@ export const ProfilePage = () => {
             </button>
           </div>
 
-          {/* Tab Content */}
           <div style={{ padding: "30px" }}>
-            {/* Pedidos */}
             {activeTab === "orders" && (
               <div>
                 <h2 style={{
@@ -434,7 +425,6 @@ export const ProfilePage = () => {
               </div>
             )}
 
-            {/* Endereços */}
             {activeTab === "addresses" && (
               <div>
                 <div style={{

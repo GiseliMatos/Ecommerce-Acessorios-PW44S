@@ -13,7 +13,6 @@ export const CartPage = () => {
   if (items.length === 0) {
     return (
       <div style={{ backgroundColor: "#f5f5f5", minHeight: "100vh", paddingBottom: "40px" }}>
-        {/* Breadcrumb */}
         <div style={{
           backgroundColor: "#fff",
           padding: "20px",
@@ -89,7 +88,6 @@ export const CartPage = () => {
 
   return (
     <div style={{ backgroundColor: "#f5f5f5", minHeight: "100vh", paddingBottom: "30px" }}>
-      {/* Breadcrumb */}
       <div style={{
         backgroundColor: "#fff",
         padding: "5px",
@@ -120,7 +118,6 @@ export const CartPage = () => {
           gridTemplateColumns: window.innerWidth < 992 ? "1fr" : "2fr 1fr",
           gap: "30px"
         }}>
-          {/* Lista de Produtos */}
           <div>
             {items.map(item => (
               <div
@@ -136,7 +133,6 @@ export const CartPage = () => {
                   alignItems: "center"
                 }}
               >
-                {/* Imagem */}
                 <div
                   onClick={() => navigate(`/product/${item.product.id}`)}
                   style={{
@@ -171,7 +167,6 @@ export const CartPage = () => {
                   )}
                 </div>
 
-                {/* Informações */}
                 <div style={{ flex: 1, textAlign: "left", marginLeft: "20px"}}>
                   <h3
                     onClick={() => navigate(`/product/${item.product.id}`)}
@@ -220,7 +215,6 @@ export const CartPage = () => {
                         inputStyle={{ width: "40px" }}
                       />
                     </div>
-                    {/* Preço Unitário */}
                     <div>
                       <span style={{ fontSize: "14px", color: "#666" }}>Preço unitário: </span>
                       <span style={{ fontSize: "16px", fontWeight: "600", color: "#333" }}>
@@ -232,7 +226,6 @@ export const CartPage = () => {
                     </div>
                   </div>
                 </div>
-                {/* Preço Total e Remover */}
                 <div style={{
                   display: "flex",
                   flexDirection: "column",
@@ -278,7 +271,6 @@ export const CartPage = () => {
               </div>
             ))}
 
-            {/* Botão Continuar Comprando */}
             <button
               onClick={() => navigate("/products")}
               style={{
@@ -308,7 +300,6 @@ export const CartPage = () => {
             </button>
           </div>
 
-          {/* Resumo do Pedido */}
           <div>
             <div style={{
               backgroundColor: "#fff",
@@ -398,7 +389,6 @@ export const CartPage = () => {
                 FINALIZAR COMPRA
               </button>
 
-              {/* Informações Adicionais */}
               <div style={{
                 backgroundColor: "#f9f9f9",
                 padding: "15px",

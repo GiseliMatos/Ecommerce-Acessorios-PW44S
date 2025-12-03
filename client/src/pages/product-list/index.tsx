@@ -117,7 +117,6 @@ export const ProductListPage = () => {
     <div style={{ backgroundColor: "#f5f5f5", minHeight: "100vh", paddingBottom: "40px" }}>
       <Toast ref={toast} />
 
-      {/* BREADCRUMB */}
       <div style={{
         backgroundColor: "#fff",
         padding: "20px",
@@ -141,7 +140,6 @@ export const ProductListPage = () => {
       <div style={{ maxWidth: "1400px", margin: "0 auto", padding: "40px 20px" }}>
         <div style={{ display: "flex", gap: "30px" }}>
 
-          {/* SIDEBAR */}
           <aside style={{
             width: "280px",
             flexShrink: 0,
@@ -161,7 +159,6 @@ export const ProductListPage = () => {
                 letterSpacing: "1px"
               }}>FILTROS</h3>
 
-              {/* CATEGORIAS */}
               <div style={{ marginBottom: "30px" }}>
                 <h4 style={{
                   fontSize: "14px",
@@ -204,7 +201,6 @@ export const ProductListPage = () => {
                 </div>
               </div>
 
-              {/* LIMPAR FILTROS */}
               <button
                 onClick={() => {
                   setSelectedCategory(null);
@@ -229,10 +225,8 @@ export const ProductListPage = () => {
             </div>
           </aside>
 
-          {/* ÁREA PRINCIPAL */}
           <div style={{ flex: 1 }}>
 
-            {/* TOP BAR */}
             <div style={{
               display: "flex",
               justifyContent: "space-between",
@@ -250,7 +244,6 @@ export const ProductListPage = () => {
 
               <div style={{ display: "flex", gap: "15px", alignItems: "center" }}>
 
-                {/* VISUALIZAÇÃO */}
                 <div style={{ display: "flex", gap: "5px" }}>
                   <button
                     onClick={() => setViewMode("grid")}
@@ -281,7 +274,6 @@ export const ProductListPage = () => {
                   </button>
                 </div>
 
-                {/* ORDENAR */}
                 <Dropdown
                   value={sortOrder}
                   options={sortOptions}
@@ -292,7 +284,6 @@ export const ProductListPage = () => {
               </div>
             </div>
 
-            {/* GRID / LISTA */}
             {paginatedProducts.length === 0 ? (
               <div style={{
                 backgroundColor: "#fff",
@@ -329,7 +320,6 @@ export const ProductListPage = () => {
                         display: viewMode === "list" ? "flex" : "block"
                       }}
                     >
-                      {/* IMAGEM */}
                       <div style={{
                         width: viewMode === "list" ? "200px" : "100%",
                         height: viewMode === "list" ? "200px" : "280px",
@@ -349,7 +339,6 @@ export const ProductListPage = () => {
                         )}
                       </div>
 
-                      {/* INFO */}
                       <div style={{ padding: "20px", flex: 1 }}>
                         <p style={{
                           fontSize: "12px",

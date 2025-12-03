@@ -31,7 +31,6 @@ export const HomePage = () => {
     setCurrentSlide(index);
   };
 
-  // Imagens banner 
   const bannerImages = [
     {
       url: "/assets/images/pecas.webp",
@@ -60,7 +59,6 @@ export const HomePage = () => {
   const [products, setProducts] = useState<IProduct[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // buscar produtos
   useEffect(() => {
     const loadFeaturedProducts = async () => {
       try {
@@ -97,7 +95,6 @@ export const HomePage = () => {
     loadFeaturedProducts();
   }, []);
 
-  // templete produtos
   const productTemplate = (product: IProduct) => {
     const img = product.urlImg || "https://w7.pngwing.com/pngs/430/832/png-transparent-web-development-internet-organization-pond-miscellaneous-angle-web-design.png";
 
@@ -170,7 +167,6 @@ export const HomePage = () => {
     <>
       <Toast ref={toast} />
 
-      {/* Banner Principal */}
       <div style={{
         position: "relative",
         width: "100%",
@@ -180,7 +176,6 @@ export const HomePage = () => {
         marginTop: "-40px",
         backgroundColor: "#f5f5f5"
       }}>
-        {/* Slides do Banner */}
         {bannerImages.map((image, index) => (
           <div
             key={index}
@@ -202,7 +197,6 @@ export const HomePage = () => {
           />
         ))}
 
-        {/* Botão Anterior */}
         <button
           onClick={prevSlide}
           style={{
@@ -233,7 +227,6 @@ export const HomePage = () => {
           <i className="pi pi-chevron-left" style={{ fontSize: "20px", color: "#ffffff" }} />
         </button>
 
-        {/* Botão Próximo */}
         <button
           onClick={nextSlide}
           style={{
@@ -264,7 +257,6 @@ export const HomePage = () => {
           <i className="pi pi-chevron-right" style={{ fontSize: "20px", color: "#ffffff" }} />
         </button>
 
-        {/* Indicadores */}
         <div
           style={{
             position: "absolute",
@@ -296,7 +288,6 @@ export const HomePage = () => {
         </div>
       </div>
 
-      {/* Seção de Categorias em Destaque */}
       <div style={{
         padding: "60px 20px",
         maxWidth: "1400px",
@@ -307,7 +298,6 @@ export const HomePage = () => {
           gridTemplateColumns: "repeat(auto-fit, minmax(350px, 1fr))",
           gap: "20px"
         }}>
-          {/* Card 1 - Colares */}
           <div
             onClick={() => navigate("/products")}
             style={{
@@ -387,7 +377,6 @@ export const HomePage = () => {
             </div>
           </div>
 
-          {/* Card 2 - Brincos */}
           <div
             onClick={() => navigate("/products/category/2")}
             style={{
@@ -467,7 +456,6 @@ export const HomePage = () => {
             </div>
           </div>
 
-          {/* Card 3 - Anéis */}
           <div
             onClick={() => navigate("/products")}
             style={{
@@ -549,7 +537,6 @@ export const HomePage = () => {
         </div>
       </div>
 
-      {/* Seção de Benefícios */}
       <div style={{
         backgroundColor: "#f9f9f9",
         padding: "50px 20px",
@@ -563,7 +550,6 @@ export const HomePage = () => {
           gap: "40px",
           textAlign: "center"
         }}>
-          {/* Frete Grátis */}
           <div>
             <i className="pi pi-truck" style={{
               fontSize: "40px",
@@ -585,7 +571,6 @@ export const HomePage = () => {
             }}>acima de R$149</p>
           </div>
 
-          {/* Pague com PIX */}
           <div>
             <i className="pi pi-qrcode" style={{
               fontSize: "40px",
@@ -607,7 +592,6 @@ export const HomePage = () => {
             }}>e ganhe 5% OFF</p>
           </div>
 
-          {/* Parcelamento */}
           <div>
             <i className="pi pi-credit-card" style={{
               fontSize: "40px",
@@ -629,7 +613,6 @@ export const HomePage = () => {
             }}>em até 12x sem juros</p>
           </div>
 
-          {/* Trocas */}
           <div>
             <i className="pi pi-sync" style={{
               fontSize: "40px",
@@ -651,7 +634,6 @@ export const HomePage = () => {
             }}>prazo de 30 dias</p>
           </div>
 
-          {/* Cashback */}
           <div>
             <i className="pi pi-wallet" style={{
               fontSize: "40px",
@@ -673,7 +655,6 @@ export const HomePage = () => {
             }}>ganhe 12% de bônus</p>
           </div>
 
-          {/* Entrega Rápida */}
           <div>
             <i className="pi pi-bolt" style={{
               fontSize: "40px",
@@ -696,8 +677,6 @@ export const HomePage = () => {
           </div>
         </div>
       </div>
-
-      {/* Seção de Produtos em destaque */}
 
       <div style={{
         maxWidth: "1800px",
@@ -730,7 +709,6 @@ export const HomePage = () => {
         )}
       </div>
 
-      {/* Seção Newsletter */}
       <div style={{
         backgroundColor: "#fff",
         padding: "80px 20px",

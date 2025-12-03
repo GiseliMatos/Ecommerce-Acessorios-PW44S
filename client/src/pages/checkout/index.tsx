@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useCart } from "@/context/hooks/use-cart";
 import { useAuth } from "@/context/hooks/use-auth";
 import { Toast } from "primereact/toast";
-import { Dialog } from "primereact/dialog"; // Import do Dialog adicionado
+import { Dialog } from "primereact/dialog"; 
 import AddressService, { type IAddress } from "@/services/address-service";
 import OrderService from "@/services/order-service";
 
@@ -47,7 +47,6 @@ export const CheckoutPage = () => {
       const response = await AddressService.findAllByAuthenticatedUser();
       if (response.status === 200 && response.data.length > 0) {
         setAddresses(response.data);
-        // Seleciona o primeiro endereço automaticamente 
         if (!selectedAddress) {
             setSelectedAddress(response.data[0]);
         }
@@ -67,7 +66,6 @@ export const CheckoutPage = () => {
   const getShippingCost = (): number => {
     const subtotal = getTotalPrice();
 
-    // Frete grátis 
     if (subtotal >= 149) {
       return 0;
     }
@@ -190,7 +188,6 @@ export const CheckoutPage = () => {
     <div style={{ backgroundColor: "#f5f5f5", minHeight: "100vh", paddingBottom: "40px" }}>
       <Toast ref={toast} />
 
-      {/* --- INÍCIO DA SELEÇÃO DE ENDEREÇO --- */}
       <Dialog 
         header="Selecionar Endereço de Entrega" 
         visible={showAddressDialog} 
@@ -274,7 +271,6 @@ export const CheckoutPage = () => {
         </div>
       </Dialog>
 
-      {/* Breadcrumb */}
       <div style={{
         backgroundColor: "#fff",
         padding: "20px",
@@ -291,7 +287,6 @@ export const CheckoutPage = () => {
         </div>
       </div>
 
-      {/* Etapas do Checkout */}
       <div style={{
         backgroundColor: "#fff",
         padding: "30px 20px",
@@ -389,7 +384,6 @@ export const CheckoutPage = () => {
           gap: "30px"
         }}>
           <div>
-            {/* Forma de Pagamento */}
             <div style={{
               backgroundColor: "#fff",
               padding: "30px",
@@ -521,7 +515,6 @@ export const CheckoutPage = () => {
               </div>
             </div>
 
-            {/* Opções de Frete */}
             <div style={{
               backgroundColor: "#fff",
               padding: "30px",
@@ -663,7 +656,6 @@ export const CheckoutPage = () => {
               </div>
             </div>
 
-            {/* Endereço de Entrega */}
             <div style={{
               backgroundColor: "#fff",
               padding: "30px",
@@ -701,7 +693,6 @@ export const CheckoutPage = () => {
                       </p>
                     </div>
                     <button
-                      // Abre o modal
                       onClick={() => setShowAddressDialog(true)}
                       style={{
                         padding: "8px 16px",
@@ -749,7 +740,6 @@ export const CheckoutPage = () => {
             </div>
           </div>
 
-          {/* Resumo do Pedido */}
           <div>
             <div style={{
               backgroundColor: "#fff",

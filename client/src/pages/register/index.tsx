@@ -143,7 +143,6 @@ export const RegisterPage = () => {
             )}
           </div>
 
-          {/* Username */}
           <div style={{ marginBottom: "25px" }}>
             <label 
               htmlFor="username" 
@@ -188,7 +187,6 @@ export const RegisterPage = () => {
             )}
           </div>
 
-          {/* Password */}
           <div style={{ marginBottom: "30px" }}>
             <label 
               htmlFor="password" 
@@ -239,7 +237,6 @@ export const RegisterPage = () => {
             )}
           </div>
 
-          {/* Submit Button */}
           <Button
             type="submit"
             label="CRIAR CONTA"

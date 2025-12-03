@@ -79,7 +79,6 @@ export const OrderSuccessPage = () => {
           borderRadius: "8px",
           boxShadow: "0 2px 8px rgba(0,0,0,0.1)"
         }}>
-          {/* Ícone de Sucesso */}
           <div style={{
             width: "100px",
             height: "100px",
@@ -112,7 +111,6 @@ export const OrderSuccessPage = () => {
             Em breve você receberá um e-mail com os detalhes.
           </p>
 
-          {/* Informações do Pedido */}
           {order && (
             <div style={{
               backgroundColor: "#f9f9f9",
@@ -184,7 +182,6 @@ export const OrderSuccessPage = () => {
                 </div>
               </div>
 
-              {/* Endereço de Entrega */}
               {order.address && (
                 <div style={{
                   marginTop: "20px",
@@ -204,7 +201,6 @@ export const OrderSuccessPage = () => {
                 </div>
               )}
 
-              {/* Itens do Pedido */}
               <div style={{
                 marginTop: "20px",
                 paddingTop: "20px",
@@ -244,7 +240,6 @@ export const OrderSuccessPage = () => {
             </div>
           )}
 
-          {/* Próximos Passos */}
           <div style={{
             backgroundColor: "#fff5f8",
             padding: "20px",
@@ -274,7 +269,6 @@ export const OrderSuccessPage = () => {
             </ul>
           </div>
 
-          {/* Botões de Ação */}
           <div style={{
             display: "flex",
             gap: "15px",

@@ -17,7 +17,6 @@ export function AppRoutes() {
   return (
     <Routes>
       <Route path="/" element={<Layout />}>
-        {/* public routes */}
         <Route path="login" element={<LoginPage />} />
         <Route path="register" element={<RegisterPage />} />
         <Route index element={<HomePage />} />
@@ -28,7 +27,6 @@ export function AppRoutes() {
         <Route path="product/:id" element={<ProductDetailPage />} />
         <Route path="cart" element={<CartPage />} />
 
-        {/* protected */}
         <Route element={<RequireAuth />}>
           <Route path="checkout" element={<CheckoutPage />} />
           <Route path="addresses" element={<AddressesPage />} />
